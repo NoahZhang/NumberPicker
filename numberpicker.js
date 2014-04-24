@@ -7,7 +7,10 @@
   }
 
   NumberPicker.DEFAULTS = {
-    theme: 'a'
+    theme: 'a',
+    validateResult: function(data) {
+      return true;
+    }
   }
 
   // NunberPicker PLUGIN DEFINITION
@@ -95,7 +98,7 @@
 
     np.on('tap', 'input[id!="clear"][id!="confirm"][id!="cancel"]', onKeyDown)
       .on('click', '#clear', onClear)
-      .on('click', '#confirm', { el: this.$element, np: np }, onConfirm)
+      .on('click', '#confirm', { el: this.$element, np: np, option: this.options }, onConfirm)
       .on('click', '#cancel', { np: np }, onCancel);
   }
 
@@ -122,20 +125,32 @@
 
   function onClear(e) {
     var result;
+    var ctrl;
 
-    result =$('#numberInput').text();
+    ctrl =  $('#numberInput');
+    result = ctrl.text();
 
     if(result) {
       result = result.slice(0, result.length - 1);
     }
 
-    $('#numberInput').text(result);
+    ctrl.text(result);
   }
 
   function onConfirm(e) {
-    e.data.el.val($("#numberInput").text());
-    $("#numberInput").text('');
-    e.data.np.remove();
+    var result;
+    var ctrl;
+    var param;
+
+    ctrl =  $("#numberInput");
+    result = ctrl.text();
+    param = e.data;
+
+    if(param.option.validateResult()) {
+      param.el.val(result);
+      ctrl.text('');
+      param.np.remove();
+    }
   }
 
   function onCancel(e) {
