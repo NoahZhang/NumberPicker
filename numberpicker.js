@@ -107,9 +107,11 @@
     var result;
     var key;
     var dotCount;
+    var ctrl;
 
+    ctrl =  $('#numberInput');
     key = $(this).val();
-    result = $('#numberInput').text();
+    result = ctrl.text();
 
     if(key === '.'){
       if(e.data.option.isInteger) return;
@@ -121,9 +123,13 @@
       }
     }
 
+    if(result === '0' && key !== '.') {
+      result = '';
+    }
+
     result += key;
 
-    $('#numberInput').text(result);
+    ctrl.text(result);
   }
 
   function onClear(e) {
