@@ -8,6 +8,7 @@
 
   NumberPicker.DEFAULTS = {
     theme: 'a',
+    isInteger: false,
     validateResult: function(data) {
       return true;
     }
@@ -67,8 +68,8 @@
     template += '<\/tr>';
     template += '<tr>';
     template += '<td><div class="nbfl"><input data-role="none" type="button" value="9"><\/div><\/td>';
-    template += '<td><div class="nbfl"><input data-role="none" type="button" value="."><\/div><\/td>';
     template += '<td><div class="nbfl"><input data-role="none" type="button" value="0"><\/div><\/td>';
+    template += '<td><div class="nbfl"><input data-role="none" type="button" value="."><\/div><\/td>';
     template += '<td><div class="nbfl"><input id="clear" data-role="none" type="button" value="c"><\/div><\/td>';
     template += '<\/tr>';
     template += '<\/table>';
@@ -96,7 +97,7 @@
 
     position(np);
 
-    np.on('tap', 'input[id!="clear"][id!="confirm"][id!="cancel"]', onKeyDown)
+    np.on('tap', 'input[id!="clear"][id!="confirm"][id!="cancel"]', { option: this.options}, onKeyDown)
       .on('click', '#clear', onClear)
       .on('click', '#confirm', { el: this.$element, np: np, option: this.options }, onConfirm)
       .on('click', '#cancel', { np: np }, onCancel);
@@ -110,7 +111,9 @@
     key = $(this).val();
     result = $('#numberInput').text();
 
-    if(key === '.' ){
+    if(key === '.'){
+      if(e.data.option.isInteger) return;
+
       dotCount = result.match(/\./g);
 
       if((dotCount && dotCount.length > 0) || result.length === 0) {
@@ -124,17 +127,11 @@
   }
 
   function onClear(e) {
-    var result;
     var ctrl;
 
     ctrl =  $('#numberInput');
-    result = ctrl.text();
 
-    if(result) {
-      result = result.slice(0, result.length - 1);
-    }
-
-    ctrl.text(result);
+    ctrl.text('0');
   }
 
   function onConfirm(e) {
@@ -143,10 +140,14 @@
     var param;
 
     ctrl =  $("#numberInput");
-    result = ctrl.text();
+    result = ctrl.text().trim();
     param = e.data;
 
-    if(param.option.validateResult()) {
+    if(result.length == 0){
+      result = '0';
+    }
+
+    if(param.option.validateResult(result)) {
       param.el.val(result);
       ctrl.text('');
       param.np.remove();
