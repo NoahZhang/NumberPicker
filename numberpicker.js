@@ -101,6 +101,17 @@
       .on('click', '#clear', onClear)
       .on('click', '#confirm', { el: this.$element, np: np, option: this.options }, onConfirm)
       .on('click', '#cancel', { np: np }, onCancel);
+
+    document.body.addEventListener('touchmove', onScroll, false);
+  }
+
+  function onScroll(e) {
+    e.preventDefault();
+  }
+
+  function onClose(e) {
+    document.body.removeEventListener('touchmove', onScroll, false);
+    $("#numberInput").text('');
   }
 
   function onKeyDown(e) {
@@ -155,14 +166,15 @@
 
     if(param.option.validateResult(result)) {
       param.el.val(result);
-      ctrl.text('');
+      ctrl.text('0');
       param.np.remove();
+      onClose();
     }
   }
 
   function onCancel(e) {
-    $("#numberInput").text('');
     e.data.np.remove();
+    onClose();
   }
 
   function position(np) {
