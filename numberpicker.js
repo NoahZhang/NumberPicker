@@ -28,6 +28,7 @@
         $(this).blur();
         ev.preventDefault();
 
+        $(this).addClass('np-target');
         np.show();
       });
     });
@@ -95,12 +96,19 @@
 
     np.appendTo($('body'));
 
-    position(np);
+    var npHeight =  $('.np', np).outerHeight(true);
+    var wnTop =  $(window).scrollTop();
+    var tmp =  this.$element.offset().top - wnTop;
+    var wnHeight =   $(window).outerHeight(true);
+
+    $('html,body').animate({ scrollTop: wnTop +(npHeight- (wnHeight - tmp)) }, 0);
+
+    position(np, this.$element);
 
     np.on('tap', 'input[id!="clear"][id!="confirm"][id!="cancel"]', { option: this.options}, onKeyDown)
       .on('click', '#clear', onClear)
       .on('click', '#confirm', { el: this.$element, np: np, option: this.options }, onConfirm)
-      .on('click', '#cancel', { np: np }, onCancel);
+      .on('click', '#cancel', { el: this.$element, np: np }, onCancel);
 
     document.body.addEventListener('touchmove', onScroll, false);
   }
@@ -111,7 +119,10 @@
 
   function onClose(e) {
     document.body.removeEventListener('touchmove', onScroll, false);
+
     $("#numberInput").text('');
+    e.el.removeClass('np-target');
+    e.np.remove();
   }
 
   function onKeyDown(e) {
@@ -166,22 +177,25 @@
 
     if(param.option.validateResult(result)) {
       param.el.val(result);
-      ctrl.text('0');
-      param.np.remove();
-      onClose();
+
+      onClose(param);
     }
   }
 
   function onCancel(e) {
-    e.data.np.remove();
-    onClose();
+    var param;
+
+    param = e.data;
+
+    onClose(param);
   }
 
-  function position(np) {
+  function position(np, el) {
     var persp = $('.np-persp', np);
     var wndw = $(window);
     var nw = persp.width(),
-         nh = wndw[0].innerHeight || wndw.innerHeight();
+         nh = wndw[0].innerHeight || wndw.innerHeight(),
+         wnOuterHeight = wndw.outerHeight(true);
     var w,
       l,
       t,
@@ -191,15 +205,23 @@
       sl = wndw.scrollLeft(),
       st = wndw.scrollTop(),
       d = $('.np', np),
-      css = {};
+      css = {},
+      docHeight;
+
+    docHeight = $(document).outerHeight(true);
 
     mw = d.outerWidth();
     mh = d.outerHeight(true);
 
-    l = Math.max(0, (nw - mw) / 2);
-    t = st + nh - mh;
+    if(docHeight > (st + wnOuterHeight)) {
+      l = Math.max(0, (nw - mw) / 2);
+      t = st + nh - mh;
+    } else {
+      t = st;
+    }
 
     css.top = t < 0 ? 0 : t;
+
     d.css(css);
 
     persp.height(0);

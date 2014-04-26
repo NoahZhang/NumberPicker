@@ -8,6 +8,8 @@
     line-height: 2em;
     font-weight:bold;
     text-align: center;
+    font-size: 34px;
+    color: red;
 }
 
 .np {
@@ -20,6 +22,12 @@
 
 .np-tbl {
     width: 100%;
+    border: 0px !important;
+    background: none !important;
+}
+
+.np-tbl td {
+    border: 0px !important;
 }
 
 .npc {
@@ -81,4 +89,8 @@
     position: absolute;
     top: 0;
     left: 0;
+}
+
+.np-target{
+    background-color: #D5F2FF !important;
 }
