@@ -49,6 +49,7 @@
 
     template += '<div class="np-w">';
     template += '<div class="np-persp">';
+    template += '<div class="npo"></div>';
     template += '<div class="np">';
     template += '<div class="npoq"><\/div>';
     template += '<div id="numberInput" class="npinput"><\/div>';
@@ -96,21 +97,15 @@
 
     np.appendTo($('body'));
 
-    var npHeight =  $('.np', np).outerHeight(true);
-    var wnTop =  $(window).scrollTop();
-    var tmp =  this.$element.offset().top - wnTop;
-    var wnHeight =   $(window).outerHeight(true);
-
-    $('html,body').animate({ scrollTop: wnTop +(npHeight- (wnHeight - tmp)) }, 0);
-
     position(np, this.$element);
 
     np.on('tap', 'input[id!="clear"][id!="confirm"][id!="cancel"]', { option: this.options}, onKeyDown)
       .on('click', '#clear', onClear)
       .on('click', '#confirm', { el: this.$element, np: np, option: this.options }, onConfirm)
-      .on('click', '#cancel', { el: this.$element, np: np }, onCancel);
+      .on('click', '#cancel', { el: this.$element, np: np }, onCancel)
+      .on('click', '.npo', { el: this.$element, np: np }, onCancel);
 
-    document.body.addEventListener('touchmove', onScroll, false);
+    $(document).on('touchmove', onScroll);
   }
 
   function onScroll(e) {
@@ -118,8 +113,7 @@
   }
 
   function onClose(e) {
-    document.body.removeEventListener('touchmove', onScroll, false);
-
+    $(document).off('touchmove');
     $("#numberInput").text('');
     e.el.removeClass('np-target');
     e.np.remove();
@@ -194,8 +188,8 @@
     var persp = $('.np-persp', np);
     var wndw = $(window);
     var nw = persp.width(),
-         nh = wndw[0].innerHeight || wndw.innerHeight(),
-         wnOuterHeight = wndw.outerHeight(true);
+         nh = wndw[0].innerHeight || wndw.innerHeight();
+
     var w,
       l,
       t,
@@ -206,17 +200,15 @@
       st = wndw.scrollTop(),
       d = $('.np', np),
       css = {},
-      docHeight;
-
-    docHeight = $(document).outerHeight(true);
+      elHeight;
 
     mw = d.outerWidth();
     mh = d.outerHeight(true);
 
-    if(docHeight > (st + wnOuterHeight)) {
-      l = Math.max(0, (nw - mw) / 2);
-      t = st + nh - mh;
-    } else {
+    t = st + nh - mh;
+    elHeight = el.offset().top;
+
+    if(t < elHeight) {
       t = st;
     }
 

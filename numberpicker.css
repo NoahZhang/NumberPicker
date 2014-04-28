@@ -1,11 +1,9 @@
 .np-w {
     font-size: 16px;
-
 }
 
 .npinput {
-    height: 2em;
-    line-height: 2em;
+    height: 1em;
     font-weight:bold;
     text-align: center;
     font-size: 34px;
@@ -24,11 +22,11 @@
     width: 100%;
     border: 0px !important;
     background: none !important;
-    padding: 0px !important;
 }
 
 .np-tbl td {
     border: 0px !important;
+    padding: 0px !important;
 }
 
 .npc {
@@ -57,7 +55,6 @@
     margin: .1em 0;
     cursor: pointer;
     overflow: hidden;
-    line-height: 2em;
     -moz-user-focus: ignore;
 }
 
@@ -77,7 +74,7 @@
     display: table-cell;
     position: relative;
     z-index: 5;
-    padding: 4px 2px 4px 2px;
+    padding: 0px 1px 0px 1px;
 }
 
 .np-persp {
@@ -94,4 +91,19 @@
 
 .np-target{
     background-color: #D5F2FF !important;
+}
+
+.np-persp, .npo {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.npo {
+    z-index: 1;
+    background: #000;
+    background: rgba(0,0,0,.2);
+    filter: Alpha(Opacity=20);
 }
